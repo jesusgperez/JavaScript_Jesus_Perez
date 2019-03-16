@@ -4,6 +4,7 @@ var Calculadora = {
     this.presionarNumeros()
     this.borrarNumeros()
     this.agregarPunto()
+    this.masMenos()
    },
   cambiarTecla: function(){
     var teclas = document.getElementsByClassName('tecla')
@@ -41,8 +42,6 @@ var Calculadora = {
       default:
         if(pantalla.innerHTML.length <= 7){
           pantalla.innerHTML += numero
-        }else{
-          alert('No se puede introducir un número mayor a 8 dígitos')
         }
         break
     }
@@ -73,7 +72,19 @@ var Calculadora = {
         pantalla.innerHTML += '.'
       }
     })
-
+  },
+  masMenos: function(){
+    var signo = document.getElementById('sign')
+    signo.addEventListener('click',function(e){
+      e.preventDefault()
+      var pantalla = document.getElementById('display')
+      var cadena = pantalla.innerHTML.split('')
+      if(cadena[0]=='-'){
+        pantalla.innerHTML = pantalla.innerHTML.replace('-','')
+      }else{
+        pantalla.innerHTML = '-' + pantalla.innerHTML
+      }
+    })
   }
 }
 
