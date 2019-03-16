@@ -3,6 +3,7 @@ var Calculadora = {
     this.cambiarTecla()
     this.presionarNumeros()
     this.borrarNumeros()
+    this.agregarPunto()
    },
   cambiarTecla: function(){
     var teclas = document.getElementsByClassName('tecla')
@@ -53,6 +54,26 @@ var Calculadora = {
       e.preventDefault()
       pantalla.innerHTML = '0'
     })
+  },
+  agregarPunto: function(){
+    var btnPunto = document.getElementById('punto')
+    btnPunto.addEventListener('click', function(e){
+      e.preventDefault()
+      var pantalla = document.getElementById('display')
+      var cadena = pantalla.innerHTML.split('')
+      var verif = false
+      for(var i = 0; i < cadena.length; i++){
+        if(cadena[i]=='.'){
+          verif = true
+        }
+      }
+      if(verif){
+        alert('Ya hay un punto en la expresión')
+      }else{  
+        pantalla.innerHTML += '.'
+      }
+    })
+
   }
 }
 
