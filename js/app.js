@@ -1,16 +1,22 @@
 var operacionAnterior = ''
 var pressIgual = false
-
-/** Realiza la operación que se oprimió anteriormente */
+var pressAgain = false
+var inicio = true
+var ultimoNumOperado = '0'
+/** Realiza la operación que se oprimió anteriormente, cuando se escribe un número y se oprime una operación,
+ *  ésta debe terminar de hacer la operación que se escribió anteriormente
+*/
 function operarAnterior(){
   switch(operacionAnterior){
     case('+'):
       var info = recuperarInfo()
+      ultimoNumOperado = info[1]
       info[0] += info[1]
       sessionStorage.setItem('resultado', JSON.stringify(info[0]))
       break
     case('-'):
       var info = recuperarInfo()
+      ultimoNumOperado = info[1]
       info[0] -= info[1]
       sessionStorage.setItem('resultado', JSON.stringify(info[0]))
       break
@@ -19,6 +25,7 @@ function operarAnterior(){
       if(info[1]==''){
         info[1] = 1
       }
+      ultimoNumOperado = info[1]
       info[0] *= info[1]
       sessionStorage.setItem('resultado', JSON.stringify(info[0]))
       break
@@ -27,6 +34,7 @@ function operarAnterior(){
       if(info[1] == ''){
         info[1] = 1
       }
+      ultimoNumOperado = info[1]
       info[0] /= info[1]
       sessionStorage.setItem('resultado', JSON.stringify(info[0]))
     default:
@@ -34,14 +42,24 @@ function operarAnterior(){
 }
 /** Recupera la información dependiendo si previamente se oprimió un = o no */
 function recuperarInfo(){
-  if(pressIgual){
-    pressIgual = false
-    var pantalla = document.getElementById('display')
-    var numero = Number(pantalla.innerHTML)
-    pantalla.innerHTML = ''
-    var respuesta = [numero, 0]
-    return respuesta
-  }else{
+  if(pressIgual){//Aquí entra cuando se oprimió el igual y se presiona otra tecla de operación
+    if(pressAgain){//Aquí entra cuando se presionó dos o más veces el igual
+      pressAgain = false
+      var pantalla = document.getElementById('display')
+      var numero = Number(pantalla.innerHTML)
+      pantalla = ''
+      var respuesta = [numero, ultimoNumOperado]
+      return respuesta
+    }else{ //Aquí entra cuando se presionó un igual y después se presiona una operación
+      pressIgual = false
+      var pantalla = document.getElementById('display')
+      var numero = Number(pantalla.innerHTML)
+      pantalla.innerHTML = ''
+      var respuesta = [numero, 0]
+      return respuesta
+    }
+  }else{//Aquí entra cuando no se ha oprimido el igual y se está operando o cuando se oprimió y se han presionado teclas de operación una o más veces
+    pressAgain = false
     var pantalla = document.getElementById('display')
     var numero = Number(pantalla.innerHTML)
     pantalla.innerHTML=''
@@ -95,6 +113,7 @@ var Calculadora = {
   agregarNumPantalla: function(e){
     var pantalla = document.getElementById('display')
     var numero = e.currentTarget.id
+    inicio = false
     switch(pantalla.innerHTML){
       case('0'):
         pantalla.innerHTML = numero
@@ -115,6 +134,7 @@ var Calculadora = {
       sessionStorage.setItem('resultado', JSON.stringify(0))
       operacionAnterior=''
       pressIgual = false
+      inicio = true
     })
   },
   agregarPunto: function(){
@@ -149,6 +169,9 @@ var Calculadora = {
       }
     })
   },
+  /**Las operaciones deben contemplar el hecho de que no se hayan hecho operaciones anteriormente
+   * esto para establecer el valor inicial del valor en el sessionStorage
+   */
   sumar: function(){
     var btnSumar = document.getElementById('mas')
     btnSumar.addEventListener('click', function(e){
@@ -205,14 +228,25 @@ var Calculadora = {
       }
     })
   },
+  /**El igual debe identificar cuando ha sido oprimido una vez y cuándo dos o más veces
+   * Además debe diferenciar cuando un resultado es mayor a 8 caracteres
+   */
   igual: function(){
     var btnIgual = document.getElementById('igual')
     btnIgual.addEventListener('click',function(e){
+      if(pressIgual){
+        pressAgain = true
+      }
       operarAnterior()
       var pantalla = document.getElementById('display')
-      var resultado = JSON.parse(sessionStorage.getItem('resultado'))
+      var resultado = sessionStorage.getItem('resultado')
+      if(resultado.length > 8){
+        resultado=resultado.slice(0, 8)
+      }
       pantalla.innerHTML = resultado
-      pressIgual=true
+      if(!inicio){
+        pressIgual=true
+      }
     })
   }
 }
