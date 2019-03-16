@@ -1,6 +1,7 @@
 var operacionAnterior = ''
+var pressIgual = false
 
-
+/** Realiza la operación que se oprimió anteriormente */
 function operarAnterior(){
   switch(operacionAnterior){
     case('+'):
@@ -31,15 +32,26 @@ function operarAnterior(){
     default:
   }
 }
+/** Recupera la información dependiendo si previamente se oprimió un = o no */
 function recuperarInfo(){
-  var pantalla = document.getElementById('display')
-  var numero = Number(pantalla.innerHTML)
-  pantalla.innerHTML=''
-  var res = Number(JSON.parse(sessionStorage.getItem('resultado')))
-  var respuesta = [res, numero]
-  return respuesta
+  if(pressIgual){
+    pressIgual = false
+    var pantalla = document.getElementById('display')
+    var numero = Number(pantalla.innerHTML)
+    pantalla.innerHTML = ''
+    var respuesta = [numero, 0]
+    return respuesta
+  }else{
+    var pantalla = document.getElementById('display')
+    var numero = Number(pantalla.innerHTML)
+    pantalla.innerHTML=''
+    var res = Number(JSON.parse(sessionStorage.getItem('resultado')))
+    var respuesta = [res, numero]
+    return respuesta
+  }
 }
 
+/**Objeto calculadora posee los métodos funcionales de la calculadora*/
 var Calculadora = {
   init: function(){
     this.cambiarTecla()
@@ -100,6 +112,9 @@ var Calculadora = {
     btnOn.addEventListener('click', function(e){
       e.preventDefault()
       pantalla.innerHTML = '0'
+      sessionStorage.setItem('resultado', JSON.stringify(0))
+      operacionAnterior=''
+      pressIgual = false
     })
   },
   agregarPunto: function(){
@@ -197,6 +212,7 @@ var Calculadora = {
       var pantalla = document.getElementById('display')
       var resultado = JSON.parse(sessionStorage.getItem('resultado'))
       pantalla.innerHTML = resultado
+      pressIgual=true
     })
   }
 }
