@@ -51,6 +51,7 @@ var Calculadora = {
     this.restar()
     this.multiplicar()
     this.dividir()
+    this.igual()
     sessionStorage.setItem('resultado', JSON.stringify(0))
    },
   cambiarTecla: function(){
@@ -187,6 +188,15 @@ var Calculadora = {
         operarAnterior()
         operacionAnterior='/'
       }
+    })
+  },
+  igual: function(){
+    var btnIgual = document.getElementById('igual')
+    btnIgual.addEventListener('click',function(e){
+      operarAnterior()
+      var pantalla = document.getElementById('display')
+      var resultado = JSON.parse(sessionStorage.getItem('resultado'))
+      pantalla.innerHTML = resultado
     })
   }
 }
