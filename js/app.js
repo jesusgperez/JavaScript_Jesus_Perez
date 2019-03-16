@@ -1,3 +1,36 @@
+var operacionAnterior = ''
+
+
+function operarAnterior(){
+  if(operacionAnterior != ''){
+    switch(operacionAnterior){
+      case('+'):
+        var info = recuperarInfo()
+        info[0] += info[1]
+        sessionStorage.setItem('resultado', JSON.stringify(info[0]))
+        break
+      case('-'):
+        var info = recuperarInfo()
+        info[0] -= info[1]
+        sessionStorage.setItem('resultado', JSON.stringify(info[0]))
+        break
+      case('*'):
+        var info = recuperarInfo()
+        info[0] *= info[1]
+        sessionStorage.setItem('resultado', JSON.stringify(info[0]))
+      default:
+    }
+  }
+}
+function recuperarInfo(){
+  var pantalla = document.getElementById('display')
+  var numero = Number(pantalla.innerHTML)
+  pantalla.innerHTML=''
+  var res = Number(JSON.parse(sessionStorage.getItem('resultado')))
+  var respuesta = [res, numero]
+  return respuesta
+}
+
 var Calculadora = {
   init: function(){
     this.cambiarTecla()
@@ -6,6 +39,7 @@ var Calculadora = {
     this.agregarPunto()
     this.masMenos()
     this.sumar()
+    this.restar()
     sessionStorage.setItem('resultado', JSON.stringify(0))
    },
   cambiarTecla: function(){
@@ -91,12 +125,43 @@ var Calculadora = {
   sumar: function(){
     var btnSumar = document.getElementById('mas')
     btnSumar.addEventListener('click', function(e){
-      var pantalla = document.getElementById('display')
-      var numero = pantalla.innerHTML
-      pantalla.innerHTML=''
-      var res = Number(JSON.parse(sessionStorage.getItem('resultado')))
-      res += Number(numero)
-      sessionStorage.setItem('resultado', JSON.stringify(res))
+      if(operacionAnterior == ''){
+        var info = recuperarInfo()
+        info[0] += info[1]
+        sessionStorage.setItem('resultado', JSON.stringify(info[0]))
+        operacionAnterior="+"
+      }else{
+        operarAnterior()
+        operacionAnterior="+"
+      }      
+    })
+  },
+  restar: function(){
+    var btnRestar = document.getElementById('menos')
+    btnRestar.addEventListener('click', function(e){
+      if(operarAnterior == ''){
+        var info = recuperarInfo()
+        info[0] -= info[1]
+        sessionStorage.setItem('resultado',JSON.stringify(info[0]))
+        operacionAnterior='-'
+      }else{
+        operarAnterior()
+        operacionAnterior='-'
+      }
+    })
+  },
+  multiplicar: function(){
+    var btnMult = document.getElementById('por')
+    btnMult.addEventListener('click', function(e){
+      if(operarAnterior == ''){
+        var info = recuperarInfo()
+        info[0] *= info[1]
+        operacionAnterior = '*'
+        sessionStorage.setItem('resultado', JSON.stringify(info[0]))
+      }else{
+        operarAnterior()
+        operacionAnterior = '*'
+      }
     })
   }
 }
