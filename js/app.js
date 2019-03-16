@@ -21,6 +21,13 @@ function operarAnterior(){
       info[0] *= info[1]
       sessionStorage.setItem('resultado', JSON.stringify(info[0]))
       break
+    case('/'):
+      var info = recuperarInfo()
+      if(info[1] == ''){
+        info[1] = 1
+      }
+      info[0] /= info[1]
+      sessionStorage.setItem('resultado', JSON.stringify(info[0]))
     default:
   }
 }
@@ -43,6 +50,7 @@ var Calculadora = {
     this.sumar()
     this.restar()
     this.multiplicar()
+    this.dividir()
     sessionStorage.setItem('resultado', JSON.stringify(0))
    },
   cambiarTecla: function(){
@@ -164,6 +172,20 @@ var Calculadora = {
       }else{
         operarAnterior()
         operacionAnterior = '*'
+      }
+    })
+  },
+  dividir: function(){
+    var btnDiv = document.getElementById('dividido')
+    btnDiv.addEventListener('click', function(e){
+      if(operacionAnterior == ''){
+        var info = recuperarInfo()
+        info[0] = info[1]
+        sessionStorage.setItem('resultado', JSON.stringify(info[0]))
+        operacionAnterior='/'
+      }else{
+        operarAnterior()
+        operacionAnterior='/'
       }
     })
   }
