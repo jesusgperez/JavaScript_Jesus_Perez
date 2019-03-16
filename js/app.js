@@ -5,6 +5,8 @@ var Calculadora = {
     this.borrarNumeros()
     this.agregarPunto()
     this.masMenos()
+    this.sumar()
+    sessionStorage.setItem('resultado', JSON.stringify(0))
    },
   cambiarTecla: function(){
     var teclas = document.getElementsByClassName('tecla')
@@ -84,6 +86,17 @@ var Calculadora = {
       }else{
         pantalla.innerHTML = '-' + pantalla.innerHTML
       }
+    })
+  },
+  sumar: function(){
+    var btnSumar = document.getElementById('mas')
+    btnSumar.addEventListener('click', function(e){
+      var pantalla = document.getElementById('display')
+      var numero = pantalla.innerHTML
+      pantalla.innerHTML=''
+      var res = Number(JSON.parse(sessionStorage.getItem('resultado')))
+      res += Number(numero)
+      sessionStorage.setItem('resultado', JSON.stringify(res))
     })
   }
 }
