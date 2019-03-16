@@ -2,24 +2,26 @@ var operacionAnterior = ''
 
 
 function operarAnterior(){
-  if(operacionAnterior != ''){
-    switch(operacionAnterior){
-      case('+'):
-        var info = recuperarInfo()
-        info[0] += info[1]
-        sessionStorage.setItem('resultado', JSON.stringify(info[0]))
-        break
-      case('-'):
-        var info = recuperarInfo()
-        info[0] -= info[1]
-        sessionStorage.setItem('resultado', JSON.stringify(info[0]))
-        break
-      case('*'):
-        var info = recuperarInfo()
-        info[0] *= info[1]
-        sessionStorage.setItem('resultado', JSON.stringify(info[0]))
-      default:
-    }
+  switch(operacionAnterior){
+    case('+'):
+      var info = recuperarInfo()
+      info[0] += info[1]
+      sessionStorage.setItem('resultado', JSON.stringify(info[0]))
+      break
+    case('-'):
+      var info = recuperarInfo()
+      info[0] -= info[1]
+      sessionStorage.setItem('resultado', JSON.stringify(info[0]))
+      break
+    case('*'):
+      var info = recuperarInfo()
+      if(info[1]==''){
+        info[1] = 1
+      }
+      info[0] *= info[1]
+      sessionStorage.setItem('resultado', JSON.stringify(info[0]))
+      break
+    default:
   }
 }
 function recuperarInfo(){
@@ -40,6 +42,7 @@ var Calculadora = {
     this.masMenos()
     this.sumar()
     this.restar()
+    this.multiplicar()
     sessionStorage.setItem('resultado', JSON.stringify(0))
    },
   cambiarTecla: function(){
@@ -127,7 +130,7 @@ var Calculadora = {
     btnSumar.addEventListener('click', function(e){
       if(operacionAnterior == ''){
         var info = recuperarInfo()
-        info[0] += info[1]
+        info[0] = info[1]
         sessionStorage.setItem('resultado', JSON.stringify(info[0]))
         operacionAnterior="+"
       }else{
@@ -139,9 +142,9 @@ var Calculadora = {
   restar: function(){
     var btnRestar = document.getElementById('menos')
     btnRestar.addEventListener('click', function(e){
-      if(operarAnterior == ''){
+      if(operacionAnterior == ''){
         var info = recuperarInfo()
-        info[0] -= info[1]
+        info[0] = info[1]
         sessionStorage.setItem('resultado',JSON.stringify(info[0]))
         operacionAnterior='-'
       }else{
@@ -153,11 +156,11 @@ var Calculadora = {
   multiplicar: function(){
     var btnMult = document.getElementById('por')
     btnMult.addEventListener('click', function(e){
-      if(operarAnterior == ''){
+      if(operacionAnterior == ''){
         var info = recuperarInfo()
-        info[0] *= info[1]
-        operacionAnterior = '*'
+        info[0] = info[1]
         sessionStorage.setItem('resultado', JSON.stringify(info[0]))
+        operacionAnterior = '*'
       }else{
         operarAnterior()
         operacionAnterior = '*'
